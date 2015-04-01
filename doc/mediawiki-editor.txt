@@ -1,1 +1,104 @@
+mediawiki-editor.txt
 
+                                _ _                _ _    _                ~
+             _ __ ___   ___  __| (_) __ ___      _(_) | _(_)               ~
+            | '_ ` _ \ / _ \/ _` | |/ _` \ \ /\ / / | |/ / |               ~
+            | | | | | |  __/ (_| | | (_| |\ V  V /| |   <| |               ~
+            |_| |_| |_|\___|\__,_|_|\__,_| \_/\_/ |_|_|\_\_|               ~
+              ___  __| (_) |_ ___  _ __                                    ~
+             / _ \/ _` | | __/ _ \| '__|                                   ~
+            |  __/ (_| | | || (_) | |                                      ~
+             \___|\__,_|_|\__\___/|_|                                      ~
+
+
+==============================================================================
+CONTENTS                                             |mediawiki-editor-contents|
+
+                  Introduction  |mediawiki-editor-introduction|
+                           Use  |mediawiki-editor-use|
+                 Configuration  |mediawiki-editor-configuration|
+                  Installation  |mediawiki-editor-installation|
+
+==============================================================================
+Introduction                    *mediawiki-editor* *mediawiki-editor-introduction*
+
+Edit MediaWiki articles from the comfort of Vim, your favorite text editor!
+
+==============================================================================
+Use                                                       *mediawiki-editor-use*
+
+vim-mediawiki-editor offers these commands:
+
+:MWRead <article-name>
+
+Loads the given article into the current buffer. >
+
+    :MWRead Radish
+
+:MWWrite [article-name]
+
+Writes the buffer back to the site. If you don't specify an article name, it
+defaults to the article you currently have open with `:MWRead`. After
+prompting you for the edit summary and major/minor edit, it will publish your
+work back to the site.
+
+:MWDiff [article-name]
+
+Diffs the current buffer against the hosted version of the article specified
+on the site. If you don't specify an article name, it defaults to the article
+you currently have open with `:MWRead`.
+
+:MWBrowse [article-name]
+
+Views the article specified in your configured browser. If you don't specify
+an article name, it defaults to the article you currently have open with
+`:MWRead`.
+
+==============================================================================
+Configuration                                   *mediawiki-editor-configuration*
+                                                        *g:mediawiki_editor_url*
+                                                   *g:mediawiki_editor_username*
+                                                   *g:mediawiki_editor_password*
+
+If you don't specify these settings, vim-mediawiki-editor will prompt you when
+you first run a vim-mediawiki-editor command.
+
+g:mediawiki_editor_url
+
+The URL of the site you're editing. For the English wikipedia, that'd be
+en.wikipedia.org.
+
+g:mediawiki_editor_username
+
+Your account username.
+
+g:mediawiki_editor_password
+
+Your account password. I recommend putting the URL and username in your
+.vimrc and letting Vim ask for your password.
+
+==============================================================================
+Installation                                     *mediawiki-editor-installation*
+
+vim-mediawiki-editor requires Vim compiled with python support and the python
+mwclient library.
+
+You likely have Python support, but you can check with: >
+
+    vim --version | grep +python
+
+MacVim comes with Python support.
+
+If you get an error, try >
+
+    pip install mwclient
+
+to get the library.
+
+Once you have these, use your favorite Vim plugin manager to install
+aquach/vim-mediawiki-editor, or copy plugin and doc into your .vim folder.
+
+I recommend you pair this with mediawiki.vim for syntax highlighting.
+
+==============================================================================
+vim:tw=78:sw=4:ts=8:ft=help:norl:

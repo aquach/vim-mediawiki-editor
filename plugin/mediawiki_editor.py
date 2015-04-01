@@ -2,8 +2,8 @@ import sys
 
 try:
     import mwclient
-except:
-    sys.stderr.write('mwclient not installed; please install perhaps via pip install mwclient.')
+except ImportError:
+    sys.stderr.write('mwclient not installed; install perhaps via pip install mwclient.\n')
     raise
 
 
@@ -39,7 +39,6 @@ def mw_read(article_name):
     global site
     vim.current.buffer[:] = site.Pages[article_name].text().split("\n")
     vim.command('set ft=mediawiki')
-    vim.command('setlocal buftype=nofile')
     vim.command("let b:article_name = '%s'" % sq_escape(article_name))
     vim.command('file! %s' % fn_escape(article_name))
 
@@ -58,7 +57,7 @@ def infer_default(article_name):
         article_name = article_name[0]
 
     if not article_name:
-        sys.stderr.write('No article specified.')
+        sys.stderr.write('No article specified.\n')
 
     return article_name
 
@@ -77,7 +76,7 @@ def mw_write(article_name):
     if result['result']:
         print 'Successfully edited %s.' % result['title']
     else:
-        sys.stderr.write('Failed to edit %s.' % article_name)
+        sys.stderr.write('Failed to edit %s.\n' % article_name)
 
 
 def mw_diff(article_name):
@@ -85,11 +84,11 @@ def mw_diff(article_name):
 
     global site
     vim.command('diffthis')
-    vim.command('leftabove split %s' % fn_escape(article_name + ' HEAD'))
-    vim.command('setlocal buftype=nofile')
-    vim.command('diffthis')
+    vim.command('leftabove vsplit %s' % fn_escape(article_name + ' - REMOTE'))
+    vim.command('setlocal buftype=nofile bufhidden=delete nobuflisted')
     vim.command('set ft=mediawiki')
     vim.current.buffer[:] = site.Pages[article_name].text().split("\n")
+    vim.command('diffthis')
     vim.command('set nomodifiable')
 
 

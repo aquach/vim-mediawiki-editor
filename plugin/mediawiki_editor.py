@@ -3,7 +3,9 @@ import sys
 try:
     import mwclient
 except ImportError:
-    sys.stderr.write('mwclient not installed; install perhaps via pip install mwclient.\n')
+    sys.stderr.write(
+            'mwclient not installed; install perhaps via'
+            ' pip install mwclient.\n')
     raise
 
 
@@ -19,9 +21,7 @@ if not from_cmdline:
     import vim
 
 
-def base_url():
-    return vim.eval('g:mediawiki_editor_url')
-
+# Utility.
 
 def sq_escape(s):
     return s.replace("'", "''")
@@ -31,23 +31,56 @@ def fn_escape(s):
     return vim.eval("fnameescape('%s')" % sq_escape(s))
 
 
-site = mwclient.Site(base_url())
-site.login(vim.eval('g:mediawiki_editor_username'), vim.eval('g:mediawiki_editor_password'))
-
-
-def mw_read(article_name):
-    global site
-    vim.current.buffer[:] = site.Pages[article_name].text().split("\n")
-    vim.command('set ft=mediawiki')
-    vim.command("let b:article_name = '%s'" % sq_escape(article_name))
-    vim.command('file! %s' % fn_escape(article_name))
-
-
 def input(prompt, text=''):
     vim.command('call inputsave()')
-    vim.command("let i = input('%s', '%s')" % (sq_escape(prompt), sq_escape(text)))
+    vim.command("let i = input('%s', '%s')" % (sq_escape(prompt),
+        sq_escape(text)))
     vim.command('call inputrestore()')
     return vim.eval('i')
+
+
+def var_exists(var):
+    return bool(int(vim.eval("exists('%s')" % sq_escape(var))))
+
+
+def get_from_config_or_prompt(var, prompt):
+    if var_exists(var):
+        return vim.eval(var)
+    else:
+        resp = input(prompt)
+        vim.command("let %s = '%s'" % (var, sq_escape(resp)))
+        return resp
+
+
+def base_url():
+    return get_from_config_or_prompt('g:mediawiki_editor_url',
+            "Mediawiki URL, like 'en.wikipedia.org': ")
+
+
+def site():
+    if site.cached_site:
+        return site.cached_site
+
+    s = mwclient.Site(base_url())
+    try:
+        s.login(
+                get_from_config_or_prompt('g:mediawiki_editor_username',
+                    'Mediawiki Username: '),
+                get_from_config_or_prompt('g:mediawiki_editor_password',
+                    'Mediawiki Password: ')
+                )
+    except mwclient.errors.LoginError as e:
+        sys.stderr.write('Error logging in: %s\n' % e)
+        vim.command(
+                'unlet g:mediawiki_editor_username '
+                'g:mediawiki_editor_password'
+                )
+        raise
+
+    site.cached_site = s
+    return s
+
+site.cached_site = None
 
 
 def infer_default(article_name):
@@ -62,17 +95,28 @@ def infer_default(article_name):
     return article_name
 
 
+# Commands.
+
+def mw_read(article_name):
+    s = site()
+    vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
+    vim.command('set ft=mediawiki')
+    vim.command("let b:article_name = '%s'" % sq_escape(article_name))
+    vim.command('file! %s' % fn_escape(article_name))
+
+
 def mw_write(article_name):
     article_name = infer_default(article_name)
 
-    global site
-    page = site.Pages[article_name]
+    s = site()
+    page = s.Pages[article_name]
     summary = input('Edit summary: ')
     minor = input('Minor edit? [y/n]: ') == 'y'
 
     print ' '
 
-    result = page.save("\n".join(vim.current.buffer[:]), summary=summary, minor=minor)
+    result = page.save("\n".join(vim.current.buffer[:]), summary=summary,
+            minor=minor)
     if result['result']:
         print 'Successfully edited %s.' % result['title']
     else:
@@ -82,12 +126,12 @@ def mw_write(article_name):
 def mw_diff(article_name):
     article_name = infer_default(article_name)
 
-    global site
+    s = site()
     vim.command('diffthis')
     vim.command('leftabove vsplit %s' % fn_escape(article_name + ' - REMOTE'))
     vim.command('setlocal buftype=nofile bufhidden=delete nobuflisted')
     vim.command('set ft=mediawiki')
-    vim.current.buffer[:] = site.Pages[article_name].text().split("\n")
+    vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
     vim.command('diffthis')
     vim.command('set nomodifiable')
 
@@ -96,10 +140,10 @@ def mw_browse(article_name):
     article_name = infer_default(article_name)
 
     url = 'http://%s/wiki/%s' % (base_url(), article_name)
-    if not vim.eval("exists('g:loaded_netrw')"):
+    if not var_exists('g:loaded_netrw'):
         vim.command('runtime! autoload/netrw.vim')
 
-    if int(vim.eval("exists('*netrw#BrowseX')")):
+    if var_exists('*netrw#BrowseX'):
         vim.command("call netrw#BrowseX('%s', 0)" % sq_escape(url))
     else:
         vim.command("call netrw#NetrwBrowseX('%s', 0)" % sq_escape(url))

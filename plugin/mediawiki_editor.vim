@@ -23,14 +23,14 @@ function! s:MWWrite(...)
   python mw_write(vim.eval('a:000'))
 endfunction
 
-function! s:MWDiff(article_name)
+function! s:MWDiff(...)
   call <SID>InitializeClient()
-  python mw_diff(vim.eval('a:article_name'))
+  python mw_diff(vim.eval('a:000'))
 endfunction
 
-function! s:MWBrowse(article_name)
+function! s:MWBrowse(...)
   call <SID>InitializeClient()
-  python mw_browse(vim.eval('a:article_name'))
+  python mw_browse(vim.eval('a:000'))
 endfunction
 
 command! -nargs=1 MWRead call <SID>MWRead(<f-args>)

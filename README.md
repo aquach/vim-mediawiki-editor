@@ -2,7 +2,7 @@
 
 Edit MediaWiki articles from the comfort of Vim, your favorite text editor!
 
-!(Demo)[https://raw.githubusercontent.com/aquach/vim-mediawiki-editor/master/examples/demo.gif]
+![Demo](https://raw.githubusercontent.com/aquach/vim-mediawiki-editor/master/examples/demo.gif)
 
 ## Installation
 

@@ -16,7 +16,7 @@ If you get an error, try `pip install mwclient` to get the library.
 
 Once you have these, use your favorite Vim plugin manager to install `aquach/vim-mediawiki-editor`, or copy `plugin` and `doc` into your `.vim` folder.
 
-I recommend you pair this with [mediawiki.vim](https://github.com/chikamichi/mediawiki.vim) for syntax highlighting.
+I recommend pairing this plugin with [mediawiki.vim](https://github.com/chikamichi/mediawiki.vim) for syntax highlighting and with [goyo.vim](https://github.com/junegunn/goyo.vim) for WriteRoom-esque editing.
 
 ## Usage
 

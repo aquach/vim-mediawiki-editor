@@ -2,7 +2,9 @@
 
 Edit MediaWiki articles from the comfort of Vim, your favorite text editor!
 
-<img align="center" src="https://raw.githubusercontent.com/aquach/vim-http-client/master/examples/demo.gif">
+<p align="center">
+  <img src="https://raw.githubusercontent.com/aquach/vim-http-client/master/examples/demo.gif">
+</p>
 
 ## Installation
 

@@ -2,6 +2,8 @@
 
 Edit MediaWiki articles from the comfort of Vim, your favorite text editor!
 
+!(Demo)[https://raw.githubusercontent.com/aquach/vim-mediawiki-editor/master/examples/demo.gif]
+
 ## Installation
 
 vim-mediawiki-editor requires Vim compiled with python support and the [python `mwclient` library](https://github.com/mwclient/mwclient).

@@ -31,10 +31,10 @@ def fn_escape(s):
     return vim.eval("fnameescape('%s')" % sq_escape(s))
 
 
-def input(prompt, text=''):
+def input(prompt, text='', password=False):
     vim.command('call inputsave()')
-    vim.command("let i = input('%s', '%s')" % (sq_escape(prompt),
-        sq_escape(text)))
+    vim.command("let i = %s('%s', '%s')" % (('inputsecret' if password else 'input'),
+        sq_escape(prompt), sq_escape(text)))
     vim.command('call inputrestore()')
     return vim.eval('i')
 
@@ -43,11 +43,11 @@ def var_exists(var):
     return bool(int(vim.eval("exists('%s')" % sq_escape(var))))
 
 
-def get_from_config_or_prompt(var, prompt):
+def get_from_config_or_prompt(var, prompt, password=False):
     if var_exists(var):
         return vim.eval(var)
     else:
-        resp = input(prompt)
+        resp = input(prompt, password=password)
         vim.command("let %s = '%s'" % (var, sq_escape(resp)))
         return resp
 
@@ -67,7 +67,7 @@ def site():
                 get_from_config_or_prompt('g:mediawiki_editor_username',
                     'Mediawiki Username: '),
                 get_from_config_or_prompt('g:mediawiki_editor_password',
-                    'Mediawiki Password: ')
+                    'Mediawiki Password: ', password=True)
                 )
     except mwclient.errors.LoginError as e:
         sys.stderr.write('Error logging in: %s\n' % e)

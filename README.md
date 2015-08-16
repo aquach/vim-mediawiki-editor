@@ -50,6 +50,12 @@ If you don't specify these settings, vim-mediawiki-editor will prompt you when y
 
 The URL of the site you're editing. For the English wikipedia, that'd be `en.wikipedia.org`.
 
+#### g:mediawiki_editor_path
+
+The MediaWiki [script path](https://www.mediawiki.org/wiki/Manual:$wgScriptPath).
+For the wikipedias and other WMF wikis, this is `/w/`, but for other wikis it can be `/`, `/wiki/`,
+or some other value.
+
 #### g:mediawiki_editor_username
 
 Your account username.

@@ -43,11 +43,11 @@ def var_exists(var):
     return bool(int(vim.eval("exists('%s')" % sq_escape(var))))
 
 
-def get_from_config_or_prompt(var, prompt, password=False):
+def get_from_config_or_prompt(var, prompt, password=False, text=''):
     if var_exists(var):
         return vim.eval(var)
     else:
-        resp = input(prompt, password=password)
+        resp = input(prompt, text=text, password=password)
         vim.command("let %s = '%s'" % (var, sq_escape(resp)))
         return resp
 
@@ -61,7 +61,10 @@ def site():
     if site.cached_site:
         return site.cached_site
 
-    s = mwclient.Site(base_url())
+    s = mwclient.Site(base_url(),
+                      path=get_from_config_or_prompt('g:mediawiki_editor_path',
+                                                     'Mediawiki Script Path: ',
+                                                     text='/w/'))
     try:
         s.login(
                 get_from_config_or_prompt('g:mediawiki_editor_username',

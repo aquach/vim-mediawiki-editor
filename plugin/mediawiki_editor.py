@@ -20,11 +20,7 @@ except NameError:
 if not from_cmdline:
     import vim
 
-# Configuration information.
-config = {
-        # Only support http and https
-        'schemes' : ['http','https']
-        }
+VALID_PROTOCOLS = [ 'http', 'https' ]
 
 # Utility.
 
@@ -47,17 +43,17 @@ def input(prompt, text='', password=False):
 def var_exists(var):
     return bool(int(vim.eval("exists('%s')" % sq_escape(var))))
 
-def get_from_config_or_default(var, default):
+
+def get_from_config(var):
     if var_exists(var):
-        value = vim.eval(var)
-        return value if (value in config['schemes']) else default
-    else:
-        return default
+        return vim.eval(var)
+    return None
 
 
 def get_from_config_or_prompt(var, prompt, password=False, text=''):
-    if var_exists(var):
-        return vim.eval(var)
+    c = get_from_config(var)
+    if c is not None:
+        return c
     else:
         resp = input(prompt, text=text, password=password)
         vim.command("let %s = '%s'" % (var, sq_escape(resp)))
@@ -73,8 +69,10 @@ def site():
     if site.cached_site:
         return site.cached_site
 
-    scheme = get_from_config_or_default('g:mediawiki_editor_uri_scheme',
-                                        'https')
+    scheme = get_from_config('g:mediawiki_editor_uri_scheme')
+    if scheme not in VALID_PROTOCOLS:
+        scheme = 'https'
+
     s = mwclient.Site((scheme, base_url()),
                       path=get_from_config_or_prompt('g:mediawiki_editor_path',
                                                      'Mediawiki Script Path: ',

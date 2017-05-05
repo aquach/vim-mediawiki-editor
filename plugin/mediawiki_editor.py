@@ -1,11 +1,12 @@
+from __future__ import print_function
 import sys
 
 try:
     import mwclient
 except ImportError:
     sys.stderr.write(
-            'mwclient not installed; install perhaps via'
-            ' pip install mwclient.\n')
+        'mwclient not installed; install perhaps via'
+        ' pip install mwclient.\n')
     raise
 
 
@@ -20,9 +21,10 @@ except NameError:
 if not from_cmdline:
     import vim
 
-VALID_PROTOCOLS = [ 'http', 'https' ]
+VALID_PROTOCOLS = ['http', 'https']
 
 # Utility.
+
 
 def sq_escape(s):
     return s.replace("'", "''")
@@ -35,7 +37,7 @@ def fn_escape(s):
 def input(prompt, text='', password=False):
     vim.command('call inputsave()')
     vim.command("let i = %s('%s', '%s')" % (('inputsecret' if password else 'input'),
-        sq_escape(prompt), sq_escape(text)))
+                                            sq_escape(prompt), sq_escape(text)))
     vim.command('call inputrestore()')
     return vim.eval('i')
 
@@ -62,7 +64,7 @@ def get_from_config_or_prompt(var, prompt, password=False, text=''):
 
 def base_url():
     return get_from_config_or_prompt('g:mediawiki_editor_url',
-            "Mediawiki URL, like 'en.wikipedia.org': ")
+                                     "Mediawiki URL, like 'en.wikipedia.org': ")
 
 
 def site():
@@ -79,17 +81,17 @@ def site():
                                                      text='/w/'))
     try:
         s.login(
-                get_from_config_or_prompt('g:mediawiki_editor_username',
-                    'Mediawiki Username: '),
-                get_from_config_or_prompt('g:mediawiki_editor_password',
-                    'Mediawiki Password: ', password=True)
-                )
+            get_from_config_or_prompt('g:mediawiki_editor_username',
+                                      'Mediawiki Username: '),
+            get_from_config_or_prompt('g:mediawiki_editor_password',
+                                      'Mediawiki Password: ', password=True)
+        )
     except mwclient.errors.LoginError as e:
         sys.stderr.write('Error logging in: %s\n' % e)
         vim.command(
-                'unlet g:mediawiki_editor_username '
-                'g:mediawiki_editor_password'
-                )
+            'unlet g:mediawiki_editor_username '
+            'g:mediawiki_editor_password'
+        )
         raise
 
     site.cached_site = s
@@ -127,12 +129,12 @@ def mw_write(article_name):
     summary = input('Edit summary: ')
     minor = input('Minor edit? [y/n]: ') == 'y'
 
-    print ' '
+    print (' ')
 
     result = page.save("\n".join(vim.current.buffer[:]), summary=summary,
-            minor=minor)
+                       minor=minor)
     if result['result']:
-        print 'Successfully edited %s.' % result['title']
+        print ('Successfully edited %s.' % result['title'])
     else:
         sys.stderr.write('Failed to edit %s.\n' % article_name)
 

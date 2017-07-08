@@ -64,6 +64,18 @@ Your account username.
 
 Your account password. I recommend putting the URL and username in your `.vimrc` and letting Vim ask for your password.
 
+#### g:mediawiki_basicauth_enabled
+
+Set this to `on` to enable HTTP Basic Authentication.
+
+#### g:mediawiki_basicauth_username
+
+The HTTP Basic Auth Username. Will be prompted if not provided and basic `g:mediawiki_basicauth_enabled` is on.
+
+#### g:mediawiki_basicauth_password
+
+The HTTP Basic Auth Password. Will be prompted if not provided and basic `g:mediawiki_basicauth_enabled` is on.
+
 ## Contributing
 
 This plugin is currently quite simple. Contributions, suggestions, and feedback are all welcomed!

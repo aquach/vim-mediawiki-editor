@@ -75,7 +75,18 @@ def site():
     if scheme not in VALID_PROTOCOLS:
         scheme = 'https'
 
+    if get_from_config('g:mediawiki_basicauth_enabled'):
+        httpauth = (
+            get_from_config_or_prompt('g:mediawiki_basicauth_username',
+                                      'Basic Auth Username: '),
+            get_from_config_or_prompt('g:mediawiki_basicauth_password',
+                                      'Basic Auth Password: ', password=True)
+        )
+    else:
+        httpauth = None
+
     s = mwclient.Site((scheme, base_url()),
+                      httpauth=httpauth,
                       path=get_from_config_or_prompt('g:mediawiki_editor_path',
                                                      'Mediawiki Script Path: ',
                                                      text='/w/'))

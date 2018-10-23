@@ -22,6 +22,7 @@ if not from_cmdline:
     import vim
 
 VALID_PROTOCOLS = ['http', 'https']
+IS_PY2 = sys.version_info < (3, 0)
 
 # Utility.
 
@@ -126,7 +127,8 @@ def infer_default(article_name):
 # Commands.
 
 def mw_read(article_name):
-    article_name = article_name.encode('utf-8').decode('utf-8')
+    if IS_PY2:
+        article_name = article_name.decode('utf-8')
     s = site()
     vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
     vim.command('set ft=mediawiki')
@@ -135,7 +137,8 @@ def mw_read(article_name):
 
 def mw_write(article_name):
     article_name = infer_default(article_name)
-    article_name = article_name.encode('utf-8').decode('utf-8')
+    if IS_PY2:
+        article_name = article_name.decode('utf-8')
 
     s = site()
     page = s.Pages[article_name]
@@ -154,7 +157,8 @@ def mw_write(article_name):
 
 def mw_diff(article_name):
     article_name = infer_default(article_name)
-    article_name = article_name.encode('utf-8').decode('utf-8')
+    if IS_PY2:
+        article_name = article_name.decode('utf-8')
 
     s = site()
     vim.command('diffthis')
@@ -168,7 +172,8 @@ def mw_diff(article_name):
 
 def mw_browse(article_name):
     article_name = infer_default(article_name)
-    article_name = article_name.encode('utf-8').decode('utf-8')
+    if IS_PY2:
+        article_name = article_name.decode('utf-8')
 
     url = 'http://%s/wiki/%s' % (base_url(), article_name)
     if not var_exists('g:loaded_netrw'):

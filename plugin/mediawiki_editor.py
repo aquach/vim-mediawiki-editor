@@ -1,4 +1,4 @@
-from __future__ import print_function, unicode_literals
+from __future__ import print_function
 import sys
 
 try:
@@ -9,6 +9,7 @@ except ImportError:
         ' pip install mwclient.\n')
     raise
 
+import six
 
 from_cmdline = False
 try:
@@ -22,7 +23,6 @@ if not from_cmdline:
     import vim
 
 VALID_PROTOCOLS = ['http', 'https']
-IS_PY2 = sys.version_info < (3, 0)
 
 # Utility.
 
@@ -109,6 +109,7 @@ def site():
     site.cached_site = s
     return s
 
+
 site.cached_site = None
 
 
@@ -121,13 +122,15 @@ def infer_default(article_name):
     if not article_name:
         sys.stderr.write('No article specified.\n')
 
+    if isinstance(article_name, six.binary_type):
+        article_name = article_name.decode('utf-8')
     return article_name
 
 
 # Commands.
 
 def mw_read(article_name):
-    if IS_PY2:
+    if isinstance(article_name, six.binary_type):
         article_name = article_name.decode('utf-8')
     s = site()
     vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
@@ -137,8 +140,6 @@ def mw_read(article_name):
 
 def mw_write(article_name):
     article_name = infer_default(article_name)
-    if IS_PY2:
-        article_name = article_name.decode('utf-8')
 
     s = site()
     page = s.Pages[article_name]
@@ -157,8 +158,6 @@ def mw_write(article_name):
 
 def mw_diff(article_name):
     article_name = infer_default(article_name)
-    if IS_PY2:
-        article_name = article_name.decode('utf-8')
 
     s = site()
     vim.command('diffthis')
@@ -172,8 +171,6 @@ def mw_diff(article_name):
 
 def mw_browse(article_name):
     article_name = infer_default(article_name)
-    if IS_PY2:
-        article_name = article_name.decode('utf-8')
 
     url = 'http://%s/wiki/%s' % (base_url(), article_name)
     if not var_exists('g:loaded_netrw'):

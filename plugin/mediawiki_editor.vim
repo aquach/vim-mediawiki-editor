@@ -43,3 +43,6 @@ command! -nargs=1 MWRead call <SID>MWRead(<f-args>)
 command! -nargs=? MWWrite call <SID>MWWrite(<f-args>)
 command! -nargs=? MWDiff call <SID>MWDiff(<f-args>)
 command! -nargs=? MWBrowse call <SID>MWBrowse(<f-args>)
+
+" Try to make mediawiki stuff automatically :w to the right place
+autocmd FileWriteCmd mediawiki call <SID>MWWrite()

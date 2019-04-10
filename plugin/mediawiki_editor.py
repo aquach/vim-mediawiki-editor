@@ -133,9 +133,13 @@ def mw_read(article_name):
     if isinstance(article_name, six.binary_type):
         article_name = article_name.decode('utf-8')
     s = site()
-    vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
+    # make a new special buffer
+    vim.command('new')
+    vim.command('file wiki://%s' % article_name)
+    vim.command('setlocal buftype=acwrite')
     vim.command('set ft=mediawiki')
     vim.command("let b:article_name = '%s'" % sq_escape(article_name))
+    vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
 
 
 def mw_write(article_name):

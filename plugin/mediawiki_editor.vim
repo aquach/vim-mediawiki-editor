@@ -1,3 +1,8 @@
+if exists('g:loaded_mediawiki_editor')
+    finish
+endif
+let g:loaded_mediawiki_editor = 1
+
 let s:initialized_python = 0
 let s:script_path = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
@@ -19,22 +24,22 @@ function! s:InitializeClient()
     endif
 endfunction
 
-function! s:MWRead(article_name)
+function! s:MWRead(article_name) abort
     call <SID>InitializeClient()
     execute s:pcommand . " mw_read(vim.eval('a:article_name'))"
 endfunction
 
-function! s:MWWrite(...)
+function! s:MWWrite(...) abort
     call <SID>InitializeClient()
     execute s:pcommand . " mw_write(vim.eval('a:000'))"
 endfunction
 
-function! s:MWDiff(...)
+function! s:MWDiff(...) abort
     call <SID>InitializeClient()
     execute s:pcommand . " mw_diff(vim.eval('a:000'))"
 endfunction
 
-function! s:MWBrowse(...)
+function! s:MWBrowse(...) abort
     call <SID>InitializeClient()
     execute s:pcommand . " mw_browse(vim.eval('a:000'))"
 endfunction
@@ -44,5 +49,19 @@ command! -nargs=? MWWrite call <SID>MWWrite(<f-args>)
 command! -nargs=? MWDiff call <SID>MWDiff(<f-args>)
 command! -nargs=? MWBrowse call <SID>MWBrowse(<f-args>)
 
-" Try to make mediawiki stuff automatically :w to the right place
-autocmd FileWriteCmd mediawiki call <SID>MWWrite()
+" Useful mappings
+nnoremap gf "wyi[:MWRead <C-R>w<CR>
+nnoremap <C-w>f "wyi[<C-w>n:MWRead <C-R>w<CR>
+
+
+augroup mediawiki
+    autocmd!
+    "
+    " Try to make mediawiki stuff automatically :w to the right place since we set 
+    " the buftype=acwrite
+    autocmd BufWriteCmd mediawiki call <SID>MWWrite()
+
+    " This is making it break with current syntax highlighting
+    "autocmd BufReadPost *.wiki setfiletype mediawiki
+    " ...
+augroup END

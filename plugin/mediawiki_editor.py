@@ -134,13 +134,14 @@ def mw_read(article_name):
         article_name = article_name.decode('utf-8')
     s = site()
     # make a new special buffer
-    vim.command('new')
-    vim.command('file wiki://%s' % article_name)
+    vim.command('enew')
+    vim.command('file %s.wiki' % article_name)
     vim.command('setlocal buftype=acwrite')
-    vim.command('set ft=mediawiki')
     vim.command("let b:article_name = '%s'" % sq_escape(article_name))
     vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
-
+    vim.command('set nomodified')
+    #vim.command('silent doautocmd BufReadPost')
+    print(' ')
 
 def mw_write(article_name):
     article_name = infer_default(article_name)
@@ -155,6 +156,7 @@ def mw_write(article_name):
     result = page.save("\n".join(vim.current.buffer[:]), summary=summary,
                        minor=minor)
     if result['result']:
+        vim.command('set nomodified')
         print('Successfully edited %s.' % result['title'])
     else:
         sys.stderr.write('Failed to edit %s.\n' % article_name)
@@ -167,7 +169,6 @@ def mw_diff(article_name):
     vim.command('diffthis')
     vim.command('leftabove vsplit %s' % fn_escape(article_name + ' - REMOTE'))
     vim.command('setlocal buftype=nofile bufhidden=delete nobuflisted')
-    vim.command('set ft=mediawiki')
     vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
     vim.command('diffthis')
     vim.command('set nomodifiable')

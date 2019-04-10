@@ -31,7 +31,7 @@ vim-mediawiki-editor offers these commands:
 
 :MWRead <article-name>
 
-Loads the given article into the current buffer. >
+Loads the given article into a new buffer. >
 
     :MWRead Radish
 
@@ -40,7 +40,7 @@ Loads the given article into the current buffer. >
 Writes the buffer back to the site. If you don't specify an article name, it
 defaults to the article you currently have open with `:MWRead`. After
 prompting you for the edit summary and major/minor edit, it will publish your
-work back to the site.
+work back to the site. :w will call this.
 
 :MWDiff [article-name]
 
@@ -53,6 +53,12 @@ you currently have open with `:MWRead`.
 Views the article specified in your configured browser. If you don't specify
 an article name, it defaults to the article you currently have open with
 `:MWRead`.
+
+gf and C-wf
+
+The usual file mappings are overridden to let you navigate wikilinks by 
+calling MWRead on them. This way, you can stay inside vim and jump around to 
+edit multiple documents quickly.
 
 ==============================================================================
 Configuration                                   *mediawiki-editor-configuration*

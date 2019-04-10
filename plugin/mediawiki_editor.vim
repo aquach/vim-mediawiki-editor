@@ -9,33 +9,33 @@ function! s:InitializeClient()
         let s:pcommand = 'python3'
         let s:pfile = 'py3file'
     else
-    echo 'Error: this plugin requires vim compiled with python support.'
-    finish
-  endif
+        echo 'Error: this plugin requires vim compiled with python support.'
+        finish
+    endif
 
-  if !s:initialized_python
-    let s:initialized_python = 1
+    if !s:initialized_python
+        let s:initialized_python = 1
         execute s:pfile . ' ' . s:script_path . '/mediawiki_editor.py'
-  endif
+    endif
 endfunction
 
 function! s:MWRead(article_name)
-  call <SID>InitializeClient()
+    call <SID>InitializeClient()
     execute s:pcommand . " mw_read(vim.eval('a:article_name'))"
 endfunction
 
 function! s:MWWrite(...)
-  call <SID>InitializeClient()
+    call <SID>InitializeClient()
     execute s:pcommand . " mw_write(vim.eval('a:000'))"
 endfunction
 
 function! s:MWDiff(...)
-  call <SID>InitializeClient()
+    call <SID>InitializeClient()
     execute s:pcommand . " mw_diff(vim.eval('a:000'))"
 endfunction
 
 function! s:MWBrowse(...)
-  call <SID>InitializeClient()
+    call <SID>InitializeClient()
     execute s:pcommand . " mw_browse(vim.eval('a:000'))"
 endfunction
 

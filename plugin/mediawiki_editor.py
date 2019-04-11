@@ -169,16 +169,23 @@ def mw_move(no_redirect, new_name):
 
     s = site()
     # TODO: It would be good to support movesubpages...
-    #s.api("move",
-    #        **{
-    #            'from': article_name,
-    #            'to': new_name,
-    #            'no_redirect': no_redirect == 0,
-    #            'movesubpages': True,
-    #            'movetalk': True,
-    #            'reason': reason,
-    #        })
-    page.move(new_name, no_redirect == 0)
+    tresponse = s.get("query", **{
+            'meta': 'tokens',
+            'format': 'json',
+            'type': 'csrf'
+        })
+    print(tresponse)
+    token = tresponse['query']['tokens']['csrftoken']
+    s.api("move",
+            **{
+                'from': article_name,
+                'to': new_name,
+                'no_redirect': no_redirect == 0,
+                'movesubpages': True,
+                'movetalk': True,
+                'reason': reason,
+                'token': token
+            })
     mw_save_name(new_name)
     vim.command('redraw')
     print("Renamed from {} to {}. No redirect was {}".format(article_name, new_name, no_redirect == 0))

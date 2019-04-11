@@ -117,10 +117,9 @@ This plugin is currently quite simple. Contributions, suggestions, and feedback 
 
 ## TODO
 
-- Test and finish move/rename
-- Make subpages query actually work right
 - Fix buffer stuff so if you try to navigate to a page that is already open, 
   it just switches
+  - Also it would be nice if `:e` on the buffer reloaded content from server
 - Make search and backlinks listings like fugitive/denite where enter opens 
   current line
 - Fix `gf` on complex links like [[Name|Title]]

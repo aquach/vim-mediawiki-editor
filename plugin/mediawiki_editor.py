@@ -165,9 +165,19 @@ def mw_backlinks(article_name):
 
 def mw_move(no_redirect, new_name):
     article_name = infer_default(None)
+    reason = input('Move reason: ')
 
     s = site()
-    page = s.Pages[article_name]
+    # TODO: It would be good to support movesubpages...
+    #s.api("move",
+    #        **{
+    #            'from': article_name,
+    #            'to': new_name,
+    #            'no_redirect': no_redirect == 0,
+    #            'movesubpages': True,
+    #            'movetalk': True,
+    #            'reason': reason,
+    #        })
     page.move(new_name, no_redirect == 0)
     mw_save_name(new_name)
     vim.command('redraw')
@@ -235,7 +245,22 @@ def mw_subpages(article_name):
         sys.stderr.write('No article name, cannot search for subpages\n')
         return
 
-    mw_search(['prefix:%s/' % article_name])
+    s = site()
+    result = s.get("query", list='prefixsearch', pssearch="%s/" % article_name)
+    results = list(result['query']['prefixsearch'])
+
+    if len(results) == 0:
+        vim.command("echo 'No subpages found for %s'" % article_name)
+        return
+
+    vim.command('enew')
+    vim.command('setlocal buftype=nowrite')
+    vim.command('set ft=mediawiki')
+    vim.current.buffer[:] = ["[[%s]]" % p.get('title') for p in results]
+    mw_save_name("Subpages of: %s" % article_name)
+    vim.command('set nomodified')
+    vim.command('redraw')
+    vim.command("echo 'Retrieved subpages for %s'" % article_name)
 
 
 def mw_browse(article_name):

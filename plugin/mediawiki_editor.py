@@ -147,9 +147,6 @@ def mw_read(article_name):
     vim.command('redraw')
     vim.command("echo 'Loaded %s'" % article_name)
 
-def mw_currentbacklinks():
-    mw_backlinks('')
-
 def mw_backlinks(article_name):
     article_name = infer_default(article_name)
     s = site()
@@ -167,16 +164,13 @@ def mw_backlinks(article_name):
     vim.command("echo 'Retrieved backlinks for %s'" % article_name)
 
 def mw_move(no_redirect, new_name):
-    article_name = vim.current.buffer.vars.get('article_name')
-    if not article_name:
-        sys.stderr.write('Cannot move or rename, not on an existing article.\n')
-
-    article_name = infer_default(article_name)
+    article_name = infer_default(None)
 
     s = site()
     page = s.Pages[article_name]
     page.move(new_name, no_redirect == 0)
-    mw_save_name(article_name)
+    mw_save_name(new_name)
+    vim.command('redraw')
     print("Renamed from {} to {}. No redirect was {}".format(article_name, new_name, no_redirect == 0))
 
 def mw_write(article_name):
@@ -187,13 +181,12 @@ def mw_write(article_name):
     summary = input('Edit summary: ')
     minor = input('Minor edit? [y/n]: ') == 'y'
 
-    print(' ')
-
     result = page.save("\n".join(vim.current.buffer[:]), summary=summary,
                        minor=minor)
     if result['result']:
         vim.command('set nomodified')
-        print('Successfully edited %s.' % result['title'])
+        vim.command('redraw')
+        print('Edited %s' % result['title'])
     else:
         sys.stderr.write('Failed to edit %s.\n' % article_name)
 
@@ -210,10 +203,48 @@ def mw_diff(article_name):
     vim.command('set nomodifiable')
 
 
+def mw_search(query_args):
+    if not query_args:
+        sys.stderr.write('No query passed.\n')
+        return
+
+    query = " ".join(query_args)
+    if query == "":
+        sys.stderr.write('No query passed.\n')
+    vim.command("echo 'Retrieving search results for %s...'" % query)
+    s = site()
+    results = list(s.search(query))
+
+    if len(results) == 0:
+        vim.command("echo 'No search results found for %s'" % query)
+        return
+
+    vim.command('enew')
+    vim.command('setlocal buftype=nowrite')
+    vim.command('set ft=mediawiki')
+    vim.current.buffer[:] = ["[[%s]]" % p.get('title') for p in results]
+    mw_save_name("Search: %s" % query)
+    vim.command('set nomodified')
+    vim.command('redraw')
+    vim.command("echo 'Retrieved search results for %s'" % query)
+
+
+def mw_subpages(article_name):
+    article_name = infer_default(article_name)
+    if not article_name:
+        sys.stderr.write('No article name, cannot search for subpages\n')
+        return
+
+    mw_search(['prefix:%s/' % article_name])
+
+
 def mw_browse(article_name):
     article_name = infer_default(article_name)
 
-    url = 'http://%s/wiki/%s' % (base_url(), article_name)
+    url = 'http://%s%sindex.php/%s' % (
+            base_url(),
+            get_from_config('g:mediawiki_editor_path') or "/wiki/",
+            article_name)
     if not var_exists('g:loaded_netrw'):
         vim.command('runtime! autoload/netrw.vim')
 

@@ -20,19 +20,38 @@ I recommend pairing this plugin with [mediawiki.vim](https://github.com/chikamic
 
 ## Usage
 
+### Mappings
+
+vim-mediawiki-editor has a few default bindings. They should probably change 
+to something smarter.
+
+`gf` navigates to the wikilink under your cursor.
+
+`C-w f` opens the wikilink under your cursor in a new window.
+
+`gl` opens the backlinks for the wikilink under your cursor.
+
+`g.` opens the backlinks for the article you are on.
+
+### Commands
+
 vim-mediawiki-editor offers these commands:
 
 #### :MWRead <article-name>
 
-Loads the given article into the current buffer.
+Loads the given article into a new buffer.
 
 ```
 :MWRead Radish
 ```
 
+#### :MWBacklinks [article-name]
+
+Opens a list of things that link to the given article.
+
 #### :MWWrite [article-name]
 
-Writes the buffer back to the site. If you don't specify an article name, it defaults to the article you currently have open with `:MWRead`. After prompting you for the edit summary and major/minor edit, it will publish your work back to the site.
+Writes the article back to the site. If you don't specify an article name, it defaults to the article you opened with `:MWRead`. After prompting you for the edit summary and major/minor edit, it will publish your work back to the site.
 
 #### :MWDiff [article-name]
 
@@ -79,3 +98,10 @@ The HTTP Basic Auth Password. Will be prompted if not provided and basic `g:medi
 ## Contributing
 
 This plugin is currently quite simple. Contributions, suggestions, and feedback are all welcomed!
+
+## TODO
+
+- Fix buffer stuff so if you try to navigate to a page that is already open, 
+  it just switches
+- Fix `gf` on complex links like [[Name|Title]]
+- Allow a fugitive-like view into prior revisions

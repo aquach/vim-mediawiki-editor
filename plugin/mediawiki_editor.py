@@ -129,19 +129,55 @@ def infer_default(article_name):
 
 # Commands.
 
+def mw_save_name(article_name):
+    vim.command('file %s.wiki' % article_name)
+    vim.command("let b:article_name = '%s'" % sq_escape(article_name))
+
 def mw_read(article_name):
     if isinstance(article_name, six.binary_type):
         article_name = article_name.decode('utf-8')
     s = site()
     # make a new special buffer
     vim.command('enew')
-    vim.command('file %s.wiki' % article_name)
     vim.command('setlocal buftype=acwrite')
-    vim.command("let b:article_name = '%s'" % sq_escape(article_name))
+    vim.command('set ft=mediawiki')
     vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
     vim.command('set nomodified')
-    #vim.command('silent doautocmd BufReadPost')
-    print(' ')
+    mw_save_name(article_name)
+    vim.command('redraw')
+    vim.command("echo 'Loaded %s'" % article_name)
+
+def mw_currentbacklinks():
+    mw_backlinks('')
+
+def mw_backlinks(article_name):
+    article_name = infer_default(article_name)
+    s = site()
+    backlinks = list(s.Pages[article_name].backlinks())
+    if len(backlinks) == 0:
+        vim.command("echo 'No backlinks found for %s'" % article_name)
+        return
+    vim.command('enew')
+    vim.command('setlocal buftype=acwrite')
+    vim.command('set ft=mediawiki')
+    vim.current.buffer[:] = ["[[%s]]" % p.name for p in backlinks]
+    mw_save_name("Special:Whatlinkshere/%s" % article_name)
+    vim.command('set nomodified')
+    vim.command('redraw')
+    vim.command("echo 'Retrieved backlinks for %s'" % article_name)
+
+def mw_move(no_redirect, new_name):
+    article_name = vim.current.buffer.vars.get('article_name')
+    if not article_name:
+        sys.stderr.write('Cannot move or rename, not on an existing article.\n')
+
+    article_name = infer_default(article_name)
+
+    s = site()
+    page = s.Pages[article_name]
+    page.move(new_name, no_redirect == 0)
+    mw_save_name(article_name)
+    print("Renamed from {} to {}. No redirect was {}".format(article_name, new_name, no_redirect == 0))
 
 def mw_write(article_name):
     article_name = infer_default(article_name)

@@ -196,7 +196,7 @@ def mw_write(article_name):
     s = site()
     page = s.Pages[article_name]
     summary = input('Edit summary: ')
-    minor = input('Minor edit? [y/n]: ') == 'y'
+    minor = input('Minor edit? [Y/n]: ') == 'y'
 
     result = page.save("\n".join(vim.current.buffer[:]), summary=summary,
                        minor=minor)

@@ -53,7 +53,8 @@ MWMoveNoRedirect renames the page with no redirect.
 
 #### :MWBacklinks [article-name]
 
-Opens a list of things that link to the given article.
+Opens a list of things that link to the given article, which you can `gf`, 
+`C-w f`, or hit Enter on to open.
 
 #### :MWWrite [article-name]
 
@@ -66,7 +67,7 @@ Diffs the current buffer against the hosted version of the article specified on 
 #### :MWSearch [query]
 
 Searches for pages matching [query] and displays a title list that you can 
-`gf` on.
+`gf`, `C-w f`, or hit Enter on.
 
 #### :MWSubpages [article-name]
 
@@ -115,13 +116,3 @@ The HTTP Basic Auth Password. Will be prompted if not provided and basic `g:medi
 
 This plugin is currently quite simple. Contributions, suggestions, and feedback are all welcomed!
 
-## TODO
-
-- Fix buffer stuff so if you try to navigate to a page that is already open, 
-  it just switches
-  - Also it would be nice if `:e` on the buffer reloaded content from server
-- Make search and backlinks listings like fugitive/denite where enter opens 
-  current line
-- Fix `gf` on complex links like [[Name|Title]]
-- Fix `gf` so it works if on [[ or ]]
-- Allow a fugitive-like view into prior revisions

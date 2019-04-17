@@ -126,6 +126,9 @@ def infer_default(article_name):
         article_name = article_name.decode('utf-8')
     return article_name
 
+def mw_list_maps():
+    vim.command('nnoremap <buffer> <Enter> ^t]"wyi[:MWRead <C-R>w<CR>')
+
 
 # Commands.
 
@@ -136,16 +139,23 @@ def mw_save_name(article_name):
 def mw_read(article_name):
     if isinstance(article_name, six.binary_type):
         article_name = article_name.decode('utf-8')
-    s = site()
-    # make a new special buffer
-    vim.command('enew')
-    vim.command('setlocal buftype=acwrite')
-    vim.command('set ft=mediawiki')
-    vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
-    vim.command('set nomodified')
-    mw_save_name(article_name)
-    vim.command('redraw')
-    vim.command("echo 'Loaded %s'" % article_name)
+    # First, check for existing buffer
+    vim.command("let b:buffer_name = '%s'" % sq_escape(article_name))
+    buffernum = vim.eval('bufwinnr(b:buffer_name)')
+    if int(buffernum) > 0:
+        vim.command('buffer %s' % buffernum)
+        vim.command("echo 'Used existing loaded article %s'" % article_name)
+    else:
+        s = site()
+        # make a new special buffer
+        vim.command('enew')
+        vim.command('setlocal buftype=acwrite')
+        vim.command('set ft=mediawiki')
+        vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
+        vim.command('set nomodified')
+        mw_save_name(article_name)
+        vim.command('redraw')
+        vim.command("echo 'Loaded %s'" % article_name)
 
 def mw_backlinks(article_name):
     article_name = infer_default(article_name)
@@ -159,6 +169,7 @@ def mw_backlinks(article_name):
     vim.command('set ft=mediawiki')
     vim.current.buffer[:] = ["[[%s]]" % p.name for p in backlinks]
     mw_save_name("Special:Whatlinkshere/%s" % article_name)
+    mw_list_maps()
     vim.command('set nomodified')
     vim.command('redraw')
     vim.command("echo 'Retrieved backlinks for %s'" % article_name)
@@ -241,6 +252,7 @@ def mw_search(query_args):
     vim.command('set ft=mediawiki')
     vim.current.buffer[:] = ["[[%s]]" % p.get('title') for p in results]
     mw_save_name("Search: %s" % query)
+    mw_list_maps()
     vim.command('set nomodified')
     vim.command('redraw')
     vim.command("echo 'Retrieved search results for %s'" % query)
@@ -272,6 +284,12 @@ def mw_subpages(article_name):
 
 def mw_browse(article_name):
     article_name = infer_default(article_name)
+    # New feature: truncate to |
+    sep = '|'
+    article_name = article_name.split(sep, 1)[0]
+    # Also dodge Semantic Mediawiki properties
+    sep = '::'
+    article_name = article_name.split(sep)[-1]
 
     url = 'http://%s%sindex.php/%s' % (
             base_url(),

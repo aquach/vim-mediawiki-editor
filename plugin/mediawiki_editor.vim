@@ -81,6 +81,10 @@ nnoremap gf "wyi[:MWRead <C-R>w<CR>
 nnoremap <C-w>f "wyi[<C-w>n:MWRead <C-R>w<CR>
 nnoremap gl "wyi[:MWBacklinks <C-R>w<CR>
 nnoremap g. :MWBacklinks<CR>
+vnoremap gf "wy:MWRead <C-R>w<CR>
+vnoremap <C-w>f "wy<C-w>n:MWRead <C-R>w<CR>
+vnoremap gs "wy:MWSearch <C-R>w<CR>
+vnoremap <C-w>s "wy<C-w>n:MWSearch <C-R>w<CR>
 
 
 augroup mediawiki

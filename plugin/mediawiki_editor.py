@@ -130,6 +130,16 @@ def mw_list_maps():
     vim.command('nnoremap <buffer> <Enter> ^t]"wyi[:MWRead <C-R>w<CR>')
 
 
+def mw_standardize_name(article_name):
+    # New feature: truncate to |
+    sep = '|'
+    article_name = article_name.split(sep, 1)[0]
+    # Also dodge Semantic Mediawiki properties
+    sep = '::'
+    article_name = article_name.split(sep)[-1]
+    # And make everything actual spaces
+    return article_name.replace('_', ' ')
+
 # Commands.
 
 def mw_save_name(article_name):
@@ -140,8 +150,9 @@ def mw_read(article_name):
     if isinstance(article_name, six.binary_type):
         article_name = article_name.decode('utf-8')
     # First, check for existing buffer
-    vim.command("let b:buffer_name = '%s'" % sq_escape(article_name))
-    buffernum = vim.eval('bufwinnr(b:buffer_name)')
+    article_name = mw_standardize_name(article_name)
+    vim.command("let b:buffer_name = '%s.wiki'" % sq_escape(article_name))
+    buffernum = vim.eval('bufnr(b:buffer_name)')
     if int(buffernum) > 0:
         vim.command('buffer %s' % buffernum)
         vim.command("echo 'Used existing loaded article %s'" % article_name)
@@ -159,6 +170,7 @@ def mw_read(article_name):
 
 def mw_backlinks(article_name):
     article_name = infer_default(article_name)
+    article_name = mw_standardize_name(article_name)
     s = site()
     backlinks = list(s.Pages[article_name].backlinks())
     if len(backlinks) == 0:
@@ -174,8 +186,9 @@ def mw_backlinks(article_name):
     vim.command('redraw')
     vim.command("echo 'Retrieved backlinks for %s'" % article_name)
 
-def mw_move(no_redirect, new_name):
+def mw_move_helper(no_redirect, new_name):
     article_name = infer_default(None)
+    article_name = mw_standardize_name(article_name)
     reason = input('Move reason: ')
 
     s = site()
@@ -191,7 +204,7 @@ def mw_move(no_redirect, new_name):
             **{
                 'from': article_name,
                 'to': new_name,
-                'no_redirect': no_redirect == 0,
+                'noredirect': no_redirect,
                 'movesubpages': True,
                 'movetalk': True,
                 'reason': reason,
@@ -199,10 +212,17 @@ def mw_move(no_redirect, new_name):
             })
     mw_save_name(new_name)
     vim.command('redraw')
-    print("Renamed from {} to {}. No redirect was {}".format(article_name, new_name, no_redirect == 0))
+    print("Renamed from {} to {}. No redirect was {}".format(article_name, new_name, no_redirect))
+
+def mw_move(new_name):
+    mw_move_helper(False, new_name)
+
+def mw_move_no_redirect(new_name):
+    mw_move_helper(True, new_name)
 
 def mw_write(article_name):
     article_name = infer_default(article_name)
+    article_name = mw_standardize_name(article_name)
 
     s = site()
     page = s.Pages[article_name]
@@ -221,6 +241,7 @@ def mw_write(article_name):
 
 def mw_diff(article_name):
     article_name = infer_default(article_name)
+    article_name = mw_standardize_name(article_name)
 
     s = site()
     vim.command('diffthis')
@@ -260,6 +281,7 @@ def mw_search(query_args):
 
 def mw_subpages(article_name):
     article_name = infer_default(article_name)
+    article_name = mw_standardize_name(article_name)
     if not article_name:
         sys.stderr.write('No article name, cannot search for subpages\n')
         return
@@ -284,12 +306,7 @@ def mw_subpages(article_name):
 
 def mw_browse(article_name):
     article_name = infer_default(article_name)
-    # New feature: truncate to |
-    sep = '|'
-    article_name = article_name.split(sep, 1)[0]
-    # Also dodge Semantic Mediawiki properties
-    sep = '::'
-    article_name = article_name.split(sep)[-1]
+    article_name = mw_standardize_name(article_name)
 
     url = 'http://%s%sindex.php/%s' % (
             base_url(),

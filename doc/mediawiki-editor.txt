@@ -15,6 +15,7 @@ mediawiki-editor.txt
 CONTENTS                                             |mediawiki-editor-contents|
 
                   Introduction  |mediawiki-editor-introduction|
+                      Mappings  |mediawiki-editor-mappings|
                            Use  |mediawiki-editor-use|
                  Configuration  |mediawiki-editor-configuration|
                   Installation  |mediawiki-editor-installation|
@@ -23,6 +24,20 @@ CONTENTS                                             |mediawiki-editor-contents|
 Introduction                    *mediawiki-editor* *mediawiki-editor-introduction*
 
 Edit MediaWiki articles from the comfort of Vim, your favorite text editor!
+
+==============================================================================
+Mappings                                             *mediawiki-editor-mappings*
+
+Buffer-local (filetype=mediawiki) ~
+    g?              Shows this help.
+    g.              Open current page in browser
+    gf              Edits wiki link under cursor in new buffer
+    <C-w>f          Edits wiki link under cursor in new window
+    g/              Lists subpages
+    gl              Lists backlinks for current buffer
+    gL              Lists backlinks for link under cursor
+    {Visual}gf      Edits selected wiki link
+    {Visual}<C-w>f  Edits selected wiki link in new window
 
 ==============================================================================
 Use                                                       *mediawiki-editor-use*

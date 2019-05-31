@@ -34,9 +34,14 @@ function! s:MWBacklinks(...) abort
     execute s:pcommand . " mw_backlinks(vim.eval('a:000'))"
 endfunction
 
-function! s:MWMove(no_redirect, new_name) abort
+function! s:MWMove(new_name) abort
     call <SID>InitializeClient()
-    execute s:pcommand . " mw_move(vim.eval('a:no_redirect'), vim.eval('a:new_name'))"
+    execute s:pcommand . " mw_move(vim.eval('a:new_name'))"
+endfunction
+
+function! s:MWMoveNoRedirect(new_name) abort
+    call <SID>InitializeClient()
+    execute s:pcommand . " mw_move_no_redirect(vim.eval('a:new_name'))"
 endfunction
 
 function! s:MWWrite(...) abort
@@ -66,26 +71,13 @@ endfunction
 
 command! -nargs=1 MWRead call <SID>MWRead(<f-args>)
 command! -nargs=? MWBacklinks call <SID>MWBacklinks(<f-args>)
-command! -nargs=1 MWMove call <SID>MWMove(0, <f-args>)
-command! -nargs=1 MWMoveNoRedirect call <SID>MWMove(1, <f-args>)
+command! -nargs=? MWMove call <SID>MWMove(<f-args>)
+command! -nargs=? MWMoveNoRedirect call <SID>MWMoveNoRedirect(<f-args>)
 command! -nargs=? MWWrite call <SID>MWWrite(<f-args>)
 command! -nargs=? MWDiff call <SID>MWDiff(<f-args>)
 command! -nargs=1 MWSearch call <SID>MWSearch(<f-args>)
 command! -nargs=? MWSubpages call <SID>MWSubpages(<f-args>)
 command! -nargs=? MWBrowse call <SID>MWBrowse(<f-args>)
-
-" Useful mappings
-nnoremap gX :MWBrowse<CR>
-nnoremap gS :MWSubpages<CR>
-nnoremap gf "wyi[:MWRead <C-R>w<CR>
-nnoremap <C-w>f "wyi[<C-w>n:MWRead <C-R>w<CR>
-nnoremap gl "wyi[:MWBacklinks <C-R>w<CR>
-nnoremap g. :MWBacklinks<CR>
-vnoremap gf "wy:MWRead <C-R>w<CR>
-vnoremap <C-w>f "wy<C-w>n:MWRead <C-R>w<CR>
-vnoremap gs "wy:MWSearch <C-R>w<CR>
-vnoremap <C-w>s "wy<C-w>n:MWSearch <C-R>w<CR>
-
 
 augroup mediawiki
     autocmd!

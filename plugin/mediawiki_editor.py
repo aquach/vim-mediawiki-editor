@@ -262,7 +262,10 @@ def mw_search(query_args):
         sys.stderr.write('No query passed.\n')
     vim.command("echo 'Retrieving search results for %s...'" % query)
     s = site()
-    results = list(s.search(query))
+
+    # Get search scope
+    scope = get_from_config('g:mediawiki_search_scope') or "title"
+    results = list(s.search(query, what=scope))
 
     if len(results) == 0:
         vim.command("echo 'No search results found for %s'" % query)

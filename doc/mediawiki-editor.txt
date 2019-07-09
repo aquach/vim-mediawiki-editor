@@ -80,6 +80,7 @@ Configuration                                   *mediawiki-editor-configuration*
                                                         *g:mediawiki_editor_url*
                                                    *g:mediawiki_editor_username*
                                                    *g:mediawiki_editor_password*
+                                                   *g:mediawiki_search_scope*
 
 If you don't specify these settings, vim-mediawiki-editor will prompt you when
 you first run a vim-mediawiki-editor command.
@@ -97,6 +98,15 @@ g:mediawiki_editor_password
 
 Your account password. I recommend putting the URL and username in your
 .vimrc and letting Vim ask for your password.
+
+g:mediawiki_search_scope
+
+
+Search scope: ‘text’ for fulltext, or ‘title’ for titles only. Depending
+on the search backend, both options may not be available. For instance
+CirrusSearch doesn’t support ‘title’, but instead provides an “intitle:”
+query string filter.
+Default : title
 
 ==============================================================================
 Installation                                     *mediawiki-editor-installation*

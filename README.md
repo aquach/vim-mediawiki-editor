@@ -112,6 +112,16 @@ The HTTP Basic Auth Username. Will be prompted if not provided and basic `g:medi
 
 The HTTP Basic Auth Password. Will be prompted if not provided and basic `g:mediawiki_basicauth_enabled` is on.
 
+#### g:mediawiki_search_scope ####
+
+Search scope: ‘text’ for fulltext, or ‘title’ for titles only. Depending
+on the search backend, both options may not be available. For instance
+CirrusSearch doesn’t support ‘title’, but instead provides an “intitle:”
+query string filter.
+
+Default : title
+
+
 ## Contributing
 
 This plugin is currently quite simple. Contributions, suggestions, and feedback are all welcomed!

@@ -86,11 +86,23 @@ def site():
     else:
         httpauth = None
 
-    s = mwclient.Site((scheme, base_url()),
-                      httpauth=httpauth,
-                      path=get_from_config_or_prompt('g:mediawiki_editor_path',
-                                                     'Mediawiki Script Path: ',
-                                                     text='/w/'))
+    version = mwclient.__dict__.get('__version__') or mwclient.__dict__.get('__ver__')
+    version_tuple = version.split('.')
+
+    if version_tuple >= [ '0', '10', '0' ]:
+        s = mwclient.Site(base_url(),
+                          httpauth=httpauth,
+                          path=get_from_config_or_prompt('g:mediawiki_editor_path',
+                                                         'Mediawiki Script Path: ',
+                                                         text='/w/'),
+                          scheme=scheme)
+    else:
+        s = mwclient.Site((scheme,base_url()),
+                          httpauth=httpauth,
+                          path=get_from_config_or_prompt('g:mediawiki_editor_path',
+                                                         'Mediawiki Script Path: ',
+                                                         text='/w/'))
+
     try:
         s.login(
             get_from_config_or_prompt('g:mediawiki_editor_username',

@@ -86,6 +86,7 @@ def get_logged_in_client(
     uri_scheme,
     base_url,
     mediawiki_path,
+    domain,
     basic_auth_creds,
     username,
     password,
@@ -106,10 +107,9 @@ def get_logged_in_client(
         s = mwclient.Site(
             (uri_scheme, base_url),
             httpauth=basic_auth_creds,
-            path=mediawiki_path,
         )
 
-    s.login(username, password)
+    s.login(username, password, domain=domain)
 
     return s
 
@@ -147,6 +147,9 @@ def site():
                 "g:mediawiki_editor_path",
                 "Mediawiki Script Path: ",
                 text="/w/",
+            ),
+            domain=get_from_config(
+                "g:mediawiki_editor_domain",
             ),
             basic_auth_creds=httpauth,
             username=get_from_config_or_prompt(

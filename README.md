@@ -58,7 +58,7 @@ or some other value.
 
 #### g:mediawiki_editor_domain
 
-The domain name for authentication. Used by [some auth extensions](https://github.com/mwclient/mwclient/wiki/Site.login#parameters).
+The domain name for authentication. Used by [some auth extensions](https://github.com/mwclient/mwclient/wiki/Site.login#parameters). This is optional, so it won't be prompted for by Vim. You need to put it in your `.vimrc` if you want to use it.
 
 #### g:mediawiki_editor_username
 

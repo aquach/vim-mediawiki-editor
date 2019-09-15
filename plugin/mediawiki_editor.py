@@ -1,5 +1,6 @@
 from __future__ import print_function
 import sys
+import six
 
 try:
     import mwclient
@@ -8,8 +9,6 @@ except ImportError:
         'mwclient not installed; install perhaps via'
         ' pip install mwclient.\n')
     raise
-
-import six
 
 from_cmdline = False
 try:
@@ -25,7 +24,6 @@ if not from_cmdline:
 VALID_PROTOCOLS = ['http', 'https']
 
 # Utility.
-
 
 def sq_escape(s):
     return s.replace("'", "''")
@@ -87,9 +85,9 @@ def site():
         httpauth = None
 
     version = mwclient.__dict__.get('__version__') or mwclient.__dict__.get('__ver__')
-    version_tuple = version.split('.')
+    version_tuple = [ int(n) for n in version.split('.') ]
 
-    if version_tuple >= [ '0', '10', '0' ]:
+    if version_tuple >= [ 0, 10, 0 ]:
         s = mwclient.Site(base_url(),
                           httpauth=httpauth,
                           path=get_from_config_or_prompt('g:mediawiki_editor_path',

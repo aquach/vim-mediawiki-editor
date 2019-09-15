@@ -15,4 +15,4 @@ mediawiki_editor.get_logged_in_client(
     password=password,
 )
 
-print "Test passed."
+print("Test passed.")

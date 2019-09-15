@@ -56,6 +56,10 @@ The MediaWiki [script path](https://www.mediawiki.org/wiki/Manual:$wgScriptPath)
 For the wikipedias and other WMF wikis, this is `/w/`, but for other wikis it can be `/`, `/wiki/`,
 or some other value.
 
+#### g:mediawiki_editor_domain
+
+The domain name for authentication. Used by [some auth extensions](https://github.com/mwclient/mwclient/wiki/Site.login#parameters).
+
 #### g:mediawiki_editor_username
 
 Your account username.
@@ -75,6 +79,10 @@ The HTTP Basic Auth Username. Will be prompted if not provided and basic `g:medi
 #### g:mediawiki_basicauth_password
 
 The HTTP Basic Auth Password. Will be prompted if not provided and basic `g:mediawiki_basicauth_enabled` is on.
+
+## Testing
+
+See the current integration test for `mwclient` in the `tests` directory. It tests for Python 2 and 3 compatibility as well as across versions of `mwclient`.
 
 ## Contributing
 

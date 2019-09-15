@@ -82,6 +82,38 @@ def base_url():
     )
 
 
+def get_logged_in_client(
+    uri_scheme,
+    base_url,
+    mediawiki_path,
+    basic_auth_creds,
+    username,
+    password,
+):
+    version = mwclient.__dict__.get(
+        "__version__"
+    ) or mwclient.__dict__.get("__ver__")
+    version_tuple = [int(n) for n in version.split(".")]
+
+    if version_tuple >= [0, 10, 0]:
+        s = mwclient.Site(
+            base_url,
+            httpauth=basic_auth_creds,
+            path=mediawiki_path,
+            scheme=uri_scheme,
+        )
+    else:
+        s = mwclient.Site(
+            (uri_scheme, base_url),
+            httpauth=basic_auth_creds,
+            path=mediawiki_path,
+        )
+
+    s.login(username, password)
+
+    return s
+
+
 def site():
     if site.cached_site:
         return site.cached_site
@@ -107,40 +139,21 @@ def site():
     else:
         httpauth = None
 
-    version = mwclient.__dict__.get(
-        "__version__"
-    ) or mwclient.__dict__.get("__ver__")
-    version_tuple = [int(n) for n in version.split(".")]
-
-    if version_tuple >= [0, 10, 0]:
-        s = mwclient.Site(
-            base_url(),
-            httpauth=httpauth,
-            path=get_from_config_or_prompt(
-                "g:mediawiki_editor_path",
-                "Mediawiki Script Path: ",
-                text="/w/",
-            ),
-            scheme=scheme,
-        )
-    else:
-        s = mwclient.Site(
-            (scheme, base_url()),
-            httpauth=httpauth,
-            path=get_from_config_or_prompt(
-                "g:mediawiki_editor_path",
-                "Mediawiki Script Path: ",
-                text="/w/",
-            ),
-        )
-
     try:
-        s.login(
-            get_from_config_or_prompt(
+        s = get_logged_in_client(
+            scheme,
+            base_url(),
+            mediawiki_path=get_from_config_or_prompt(
+                "g:mediawiki_editor_path",
+                "Mediawiki Script Path: ",
+                text="/w/",
+            ),
+            basic_auth_creds=httpauth,
+            username=get_from_config_or_prompt(
                 "g:mediawiki_editor_username",
                 "Mediawiki Username: ",
             ),
-            get_from_config_or_prompt(
+            password=get_from_config_or_prompt(
                 "g:mediawiki_editor_password",
                 "Mediawiki Password: ",
                 password=True,

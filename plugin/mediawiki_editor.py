@@ -87,7 +87,7 @@ def site():
     else:
         httpauth = None
 
-    if parse_version(mclient.Client.__version__) >= parse_version('0.10.0'):
+    if parse_version(mwclient.Client.__version__) >= parse_version('0.10.0'):
         s = mwclient.Site(base_url(), scheme=scheme,
                           httpauth=httpauth,
                           path=get_from_config_or_prompt('g:mediawiki_editor_path',

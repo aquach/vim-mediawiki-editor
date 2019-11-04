@@ -10,6 +10,7 @@ except ImportError:
     raise
 
 import six
+from pkg_resources import parse_version
 
 from_cmdline = False
 try:
@@ -86,11 +87,18 @@ def site():
     else:
         httpauth = None
 
-    s = mwclient.Site((scheme, base_url()),
-                      httpauth=httpauth,
-                      path=get_from_config_or_prompt('g:mediawiki_editor_path',
-                                                     'Mediawiki Script Path: ',
-                                                     text='/w/'))
+    if parse_version(mclient.Client.__version__) >= parse_version('0.10.0'):
+        s = mwclient.Site(base_url(), scheme=scheme,
+                          httpauth=httpauth,
+                          path=get_from_config_or_prompt('g:mediawiki_editor_path',
+                                                         'Mediawiki Script Path: ',
+                                                         text='/w/'))
+    else:
+        s = mwclient.Site((scheme, base_url()),
+                          httpauth=httpauth,
+                          path=get_from_config_or_prompt('g:mediawiki_editor_path',
+                                                         'Mediawiki Script Path: ',
+                                                         text='/w/'))
     try:
         s.login(
             get_from_config_or_prompt('g:mediawiki_editor_username',

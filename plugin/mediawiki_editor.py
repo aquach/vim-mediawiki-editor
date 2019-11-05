@@ -108,6 +108,7 @@ def get_logged_in_client(
         s = mwclient.Site(
             (uri_scheme, base_url),
             httpauth=basic_auth_creds,
+            path=mediawiki_path,
         )
 
     s.login(username, password, domain=domain)

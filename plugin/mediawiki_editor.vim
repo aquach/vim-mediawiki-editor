@@ -7,25 +7,6 @@ let s:initialized_python = 0
 let s:script_path = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 
 function! s:InitializeClient()
-<<<<<<< HEAD
-    if has('python')
-        let s:pcommand = 'python'
-        let s:pfile = 'pyfile'
-    elseif has('python3')
-        let s:pcommand = 'python3'
-        let s:pfile = 'py3file'
-    else
-        echo 'Error: this plugin requires vim compiled with python support.'
-        finish
-    endif
-
-    if !s:initialized_python
-        let s:initialized_python = 1
-        execute s:pfile . ' ' . s:script_path . '/mediawiki_editor.py'
-    endif
-endfunction
-
-
   if has('python')
     let s:python_command = 'python'
     let pyfile_command = 'pyfile'

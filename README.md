@@ -20,23 +20,59 @@ I recommend pairing this plugin with [mediawiki.vim](https://github.com/chikamic
 
 ## Usage
 
+### Mappings
+
+vim-mediawiki-editor has a few default bindings. They should probably change 
+to something smarter.
+
+`gf` navigates to the wikilink under your cursor.
+
+`C-w f` opens the wikilink under your cursor in a new window.
+
+`gl` opens the backlinks for the wikilink under your cursor.
+
+`g.` opens the backlinks for the article you are on.
+
+### Commands
+
 vim-mediawiki-editor offers these commands:
 
 #### :MWRead <article-name>
 
-Loads the given article into the current buffer.
+Loads the given article into a new buffer.
 
 ```
 :MWRead Radish
 ```
 
+#### :MWMove <article-name> or :MWMoveNoRedirect <article-name>
+
+MWMove does a normal move with redirect.
+
+MWMoveNoRedirect renames the page with no redirect.
+
+#### :MWBacklinks [article-name]
+
+Opens a list of things that link to the given article, which you can `gf`, 
+`C-w f`, or hit Enter on to open.
+
 #### :MWWrite [article-name]
 
-Writes the buffer back to the site. If you don't specify an article name, it defaults to the article you currently have open with `:MWRead`. After prompting you for the edit summary and major/minor edit, it will publish your work back to the site.
+Writes the article back to the site. If you don't specify an article name, it defaults to the article you opened with `:MWRead`. After prompting you for the edit summary and major/minor edit, it will publish your work back to the site.
 
 #### :MWDiff [article-name]
 
 Diffs the current buffer against the hosted version of the article specified on the site. If you don't specify an article name, it defaults to the article you currently have open with `:MWRead`.
+
+#### :MWSearch [query]
+
+Searches for pages matching [query] and displays a title list that you can 
+`gf`, `C-w f`, or hit Enter on.
+
+#### :MWSubpages [article-name]
+
+Displays a list of subpages of the given article (or the article you are 
+on) which you can `gf` on to navigate to.
 
 #### :MWBrowse [article-name]
 
@@ -80,6 +116,15 @@ The HTTP Basic Auth Username. Will be prompted if not provided and basic `g:medi
 
 The HTTP Basic Auth Password. Will be prompted if not provided and basic `g:mediawiki_basicauth_enabled` is on.
 
+#### g:mediawiki_search_scope ####
+
+Search scope: ‘text’ for fulltext, or ‘title’ for titles only. Depending
+on the search backend, both options may not be available. For instance
+CirrusSearch doesn’t support ‘title’, but instead provides an “intitle:”
+query string filter.
+
+Default : title
+
 ## Testing
 
 See the current integration test for `mwclient` in the `tests` directory. It tests for Python 2 and 3 compatibility as well as across versions of `mwclient`.
@@ -87,3 +132,4 @@ See the current integration test for `mwclient` in the `tests` directory. It tes
 ## Contributing
 
 This plugin is currently quite simple. Contributions, suggestions, and feedback are all welcomed!
+

@@ -15,6 +15,7 @@ mediawiki-editor.txt
 CONTENTS                                             |mediawiki-editor-contents|
 
                   Introduction  |mediawiki-editor-introduction|
+                      Mappings  |mediawiki-editor-mappings|
                            Use  |mediawiki-editor-use|
                  Configuration  |mediawiki-editor-configuration|
                   Installation  |mediawiki-editor-installation|
@@ -25,13 +26,27 @@ Introduction                    *mediawiki-editor* *mediawiki-editor-introductio
 Edit MediaWiki articles from the comfort of Vim, your favorite text editor!
 
 ==============================================================================
+Mappings                                             *mediawiki-editor-mappings*
+
+Buffer-local (filetype=mediawiki) ~
+    g?              Shows this help.
+    g.              Open current page in browser
+    gf              Edits wiki link under cursor in new buffer
+    <C-w>f          Edits wiki link under cursor in new window
+    g/              Lists subpages
+    gl              Lists backlinks for current buffer
+    gL              Lists backlinks for link under cursor
+    {Visual}gf      Edits selected wiki link
+    {Visual}<C-w>f  Edits selected wiki link in new window
+
+==============================================================================
 Use                                                       *mediawiki-editor-use*
 
 vim-mediawiki-editor offers these commands:
 
 :MWRead <article-name>
 
-Loads the given article into the current buffer. >
+Loads the given article into a new buffer. >
 
     :MWRead Radish
 
@@ -40,7 +55,7 @@ Loads the given article into the current buffer. >
 Writes the buffer back to the site. If you don't specify an article name, it
 defaults to the article you currently have open with `:MWRead`. After
 prompting you for the edit summary and major/minor edit, it will publish your
-work back to the site.
+work back to the site. :w will call this.
 
 :MWDiff [article-name]
 
@@ -54,11 +69,18 @@ Views the article specified in your configured browser. If you don't specify
 an article name, it defaults to the article you currently have open with
 `:MWRead`.
 
+gf and C-wf
+
+The usual file mappings are overridden to let you navigate wikilinks by 
+calling MWRead on them. This way, you can stay inside vim and jump around to 
+edit multiple documents quickly.
+
 ==============================================================================
 Configuration                                   *mediawiki-editor-configuration*
                                                         *g:mediawiki_editor_url*
                                                    *g:mediawiki_editor_username*
                                                    *g:mediawiki_editor_password*
+                                                   *g:mediawiki_search_scope*
 
 If you don't specify these settings, vim-mediawiki-editor will prompt you when
 you first run a vim-mediawiki-editor command.
@@ -76,6 +98,15 @@ g:mediawiki_editor_password
 
 Your account password. I recommend putting the URL and username in your
 .vimrc and letting Vim ask for your password.
+
+g:mediawiki_search_scope
+
+
+Search scope: ‘text’ for fulltext, or ‘title’ for titles only. Depending
+on the search backend, both options may not be available. For instance
+CirrusSearch doesn’t support ‘title’, but instead provides an “intitle:”
+query string filter.
+Default : title
 
 ==============================================================================
 Installation                                     *mediawiki-editor-installation*

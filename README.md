@@ -92,6 +92,10 @@ The MediaWiki [script path](https://www.mediawiki.org/wiki/Manual:$wgScriptPath)
 For the wikipedias and other WMF wikis, this is `/w/`, but for other wikis it can be `/`, `/wiki/`,
 or some other value.
 
+#### g:mediawiki_editor_domain
+
+The domain name for authentication. Used by [some auth extensions](https://github.com/mwclient/mwclient/wiki/Site.login#parameters). This is optional, so it won't be prompted for by Vim. You need to put it in your `.vimrc` if you want to use it.
+
 #### g:mediawiki_editor_username
 
 Your account username.
@@ -121,6 +125,9 @@ query string filter.
 
 Default : title
 
+## Testing
+
+See the current integration test for `mwclient` in the `tests` directory. It tests for Python 2 and 3 compatibility as well as across versions of `mwclient`.
 
 ## Contributing
 

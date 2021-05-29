@@ -80,6 +80,10 @@ The HTTP Basic Auth Username. Will be prompted if not provided and basic `g:medi
 
 The HTTP Basic Auth Password. Will be prompted if not provided and basic `g:mediawiki_basicauth_enabled` is on.
 
+#### g:mediawiki_editor_uri_scheme
+
+The protocol to use to communicate with the site. Must be either `http` or `https`. Defaults to `https`.
+
 ## Testing
 
 See the current integration test for `mwclient` in the `tests` directory. It tests for Python 2 and 3 compatibility as well as across versions of `mwclient`.

@@ -82,6 +82,24 @@ def base_url():
     )
 
 
+def get_filetype(article_name):
+    config_namespaces = ["User:", "MediaWiki:"]
+    config_extensions = {
+                          ".css": "css",
+                          ".js": "javascript",
+                          ".json": "json"
+                         }
+    if article_name.startswith("Module:"):
+        return "lua"
+    for namespace in config_namespaces:
+        for extension in config_extensions:
+            if article_name.startswith(namespace) and article_name.endswith(extension):
+                return config_extensions[extension]
+
+    return "mediawiki"
+
+
+
 def get_logged_in_client(
     uri_scheme,
     base_url,
@@ -203,7 +221,7 @@ def mw_read(article_name):
     vim.current.buffer[:] = (
         s.Pages[article_name].text().split("\n")
     )
-    vim.command("set ft=mediawiki")
+    vim.command(f"set ft={get_filetype(article_name)}")
     vim.command(
         "let b:article_name = '%s'"
         % sq_escape(article_name)
@@ -245,7 +263,7 @@ def mw_diff(article_name):
     vim.command(
         "setlocal buftype=nofile bufhidden=delete nobuflisted"
     )
-    vim.command("set ft=mediawiki")
+    vim.command(f"set ft={get_filetype(article_name)}")
     vim.current.buffer[:] = (
         s.Pages[article_name].text().split("\n")
     )

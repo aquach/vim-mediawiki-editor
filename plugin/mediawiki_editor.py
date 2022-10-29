@@ -91,11 +91,11 @@ def get_filetype(article_name):
                          }
     if article_name.startswith("Module:"):
         return "lua"
-    for namespace in config_namespaces:
-        for extension in config_extensions:
-            if article_name.startswith(namespace) and article_name.endswith(extension):
-                return config_extensions[extension]
-
+    if any((article_name.startswith(n) for n in config_namespaces)):
+        for extension, filetype in config_extensions.items():
+            if article_name.endswith(extension):
+                return filetype
+    
     return "mediawiki"
 
 
